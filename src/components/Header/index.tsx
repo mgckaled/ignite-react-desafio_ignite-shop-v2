@@ -3,7 +3,7 @@ import Link from "next/link"
 
 import logoImg from "../../assets/logo.svg"
 
-import { CartButton } from "../CartButton"
+import { Cart } from "../Cart"
 import { HeaderContainer } from "./styles"
 
 export function Header() {
@@ -19,7 +19,7 @@ export function Header() {
             priority
           />
         </Link>
-        <CartButton />
+        <Cart />
       </HeaderContainer>
     </HeaderContainer>
   )
