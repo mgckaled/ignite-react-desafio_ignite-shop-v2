@@ -1,4 +1,5 @@
 import Link from "next/link"
+
 import { styled } from ".."
 
 export const HomeContainer = styled("main", {
@@ -6,7 +7,16 @@ export const HomeContainer = styled("main", {
   width: "100%",
   maxWidth: "calc(100vw - ((100vw - 1180px) / 2))",
   marginLeft: "auto",
-  minHeight: 656,
+  minHeight: 520,
+})
+
+export const SliderContainer = styled("div", {
+  display: "flex",
+  gap: "2.8rem",
+  margin: "0 auto",
+  ".embla__slide": {
+    minWidth: "30rem",
+  },
 })
 
 export const Product = styled(Link, {
@@ -15,6 +25,8 @@ export const Product = styled(Link, {
   cursor: "pointer",
   position: "relative",
   overflow: "hidden",
+  width: "80%",
+  minHeight: 520,
 
   display: "flex",
   alignItems: "center",

@@ -1,12 +1,12 @@
-import { useKeenSlider } from "keen-slider/react"
+import useEmblaCarousel from "embla-carousel-react"
 import { GetStaticProps } from "next"
 import Head from "next/head"
 import Image from "next/image"
 import Stripe from "stripe"
 
-import "keen-slider/keen-slider.min.css"
 import { stripe } from "../lib/stripe"
-import { HomeContainer, Product } from "../styles/pages/home"
+
+import { HomeContainer, Product, SliderContainer } from "../styles/pages/home"
 
 interface HomeProps {
   products: {
@@ -18,11 +18,10 @@ interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
-  const [sliderRef] = useKeenSlider({
-    slides: {
-      perView: 3,
-      spacing: 48,
-    },
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+    skipSnaps: false,
+    dragFree: true,
   })
 
   return (
@@ -31,35 +30,41 @@ export default function Home({ products }: HomeProps) {
         <title>{"Home | Ignite Shop"}</title>
       </Head>
 
-      <HomeContainer
-        ref={sliderRef}
-        className='keen-slider'
-      >
-        {products.map(product => {
-          return (
-            <Product
-              href={`/product/${product.id}`}
-              key={product.id}
-              className='keen-slider__slide'
-              prefetch={false}
-            >
-              <Image
-                src={product.imageUrl}
-                width={520}
-                height={480}
-                alt={`Imagem da ${product.name}`}
-                priority
-                style={{ width: "85%", height: "85%" }}
-              />
+      <div style={{ overflow: "hidden", width: "100%" }}>
+        <HomeContainer>
+          <div
+            className='embla'
+            ref={emblaRef}
+          >
+            <SliderContainer className='embla__container container'>
+              {products.map(product => {
+                return (
+                  <Product
+                    href={`/product/${product.id}`}
+                    key={product.id}
+                    className='embla__slide'
+                    prefetch={false}
+                  >
+                    <Image
+                      src={product.imageUrl}
+                      width={520}
+                      height={480}
+                      alt={`Imagem da ${product.name}`}
+                      priority
+                      style={{ width: "100%", height: "100%" }}
+                    />
 
-              <footer>
-                <strong>{product.name}</strong>
-                <span>{product.price}</span>
-              </footer>
-            </Product>
-          )
-        })}
-      </HomeContainer>
+                    <footer>
+                      <strong>{product.name}</strong>
+                      <span>{product.price}</span>
+                    </footer>
+                  </Product>
+                )
+              })}
+            </SliderContainer>
+          </div>
+        </HomeContainer>
+      </div>
     </>
   )
 }
@@ -90,6 +95,5 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 60 * 2, // 2 hours,
   }
 }
-
 
 

@@ -1,10 +1,18 @@
 import * as Dialog from "@radix-ui/react-dialog"
+import Image from "next/image"
 import { X } from "phosphor-react"
 
 import { CartButton } from "../CartButton"
 
-import { CartClose, CartContent, CartFinalization, CartProduct, CartProductDetails, CartProductImage, FinalizationDetails } from "./styles"
-import Image from "next/image"
+import {
+  CartClose,
+  CartContent,
+  CartFinalization,
+  CartProduct,
+  CartProductDetails,
+  CartProductImage,
+  FinalizationDetails,
+} from "./styles"
 
 export function Cart() {
   return (
