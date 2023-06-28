@@ -41,7 +41,7 @@ export const Product = styled(Link, {
     bottom: "0.25rem",
     left: "0.25rem",
     right: "0.25rem",
-    padding: "2rem",
+    padding: "1.5rem",
 
     borderRadius: 6,
 
@@ -64,6 +64,8 @@ export const Product = styled(Link, {
       fontSize: "$xl",
       fontWeight: "bold",
       color: "$green300",
+      display: "block",
+      marginTop: "5px"
     },
   },
 

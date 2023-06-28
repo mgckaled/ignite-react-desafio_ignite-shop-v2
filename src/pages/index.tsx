@@ -6,6 +6,7 @@ import Stripe from "stripe"
 
 import { stripe } from "../lib/stripe"
 
+import { CartButton } from "@/components/CartButton"
 import { HomeContainer, Product, SliderContainer } from "../styles/pages/home"
 
 interface HomeProps {
@@ -55,8 +56,11 @@ export default function Home({ products }: HomeProps) {
                     />
 
                     <footer>
-                      <strong>{product.name}</strong>
-                      <span>{product.price}</span>
+                      <div>
+                        <strong>{product.name}</strong> {"\n"}
+                        <span>{product.price}</span>
+                      </div>
+                      <CartButton color="green" size="large" />
                     </footer>
                   </Product>
                 )
@@ -95,5 +99,4 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 60 * 2, // 2 hours,
   }
 }
-
 

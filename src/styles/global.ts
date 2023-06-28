@@ -5,7 +5,7 @@ export const globalStyles = globalCss({
     margin: 0,
     padding: 0,
     boxSizing: "border-box",
-    
+
     "::-webkit-scrollbar": {
       width: 6,
     },
@@ -29,5 +29,13 @@ export const globalStyles = globalCss({
   "body, input, textarea, button": {
     fontFamily: "Roboto",
     fontWeight: 400,
+  },
+
+  a: {
+    color: "inherit",
+  },
+
+  button: {
+    cursor: "pointer",
   },
 })
