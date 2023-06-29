@@ -2,20 +2,18 @@ import useEmblaCarousel from "embla-carousel-react"
 import { GetStaticProps } from "next"
 import Head from "next/head"
 import Image from "next/image"
+import { MouseEvent } from "react"
 import Stripe from "stripe"
 
+import { CartButton } from "@/components/CartButton"
+import { IProduct } from "@/contexts/CartContext"
+import { useCart } from "@/hooks/useCart"
 import { stripe } from "../lib/stripe"
 
-import { CartButton } from "@/components/CartButton"
 import { HomeContainer, Product, SliderContainer } from "../styles/pages/home"
 
 interface HomeProps {
-  products: {
-    id: string
-    name: string
-    imageUrl: string
-    price: string
-  }[]
+  products: IProduct[]
 }
 
 export default function Home({ products }: HomeProps) {
@@ -24,6 +22,13 @@ export default function Home({ products }: HomeProps) {
     skipSnaps: false,
     dragFree: true,
   })
+
+  const { addToCart, checkIfItemAlreadyExists } = useCart()
+
+  function handleAddToCart(e: MouseEvent<HTMLButtonElement>, product: IProduct) {
+    e.preventDefault()
+    addToCart(product)
+  }
 
   return (
     <>
@@ -60,7 +65,12 @@ export default function Home({ products }: HomeProps) {
                         <strong>{product.name}</strong> {"\n"}
                         <span>{product.price}</span>
                       </div>
-                      <CartButton color="green" size="large" />
+                      <CartButton
+                        color='green'
+                        size='large'
+                        disabled={checkIfItemAlreadyExists(product.id)}
+                        onClick={(e) => handleAddToCart(e, product)}
+                      />
                     </footer>
                   </Product>
                 )
@@ -89,6 +99,8 @@ export const getStaticProps: GetStaticProps = async () => {
         style: "currency",
         currency: "BRL",
       }).format(price.unit_amount ? price.unit_amount / 100 : 0),
+      numberPrice: (price.unit_amount ? price.unit_amount / 100 : 0),
+      defaultPriceId: price.id
     }
   })
 
@@ -99,4 +111,3 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 60 * 2, // 2 hours,
   }
 }
-
