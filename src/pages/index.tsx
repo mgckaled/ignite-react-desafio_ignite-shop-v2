@@ -2,7 +2,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import { GetStaticProps } from "next"
 import Head from "next/head"
 import Image from "next/image"
-import { MouseEvent } from "react"
+import { MouseEvent, useEffect, useState } from "react"
 import Stripe from "stripe"
 
 import { CartButton } from "@/components/CartButton"
@@ -11,12 +11,22 @@ import { useCart } from "@/hooks/useCart"
 import { stripe } from "../lib/stripe"
 
 import { HomeContainer, Product, SliderContainer } from "../styles/pages/home"
+import { ProductSkeleton } from "@/components/ProductSkeleton"
 
 interface HomeProps {
   products: IProduct[]
 }
 
 export default function Home({ products }: HomeProps) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // fake loading to use the skeleton loading from figma
+    const timeOut = setTimeout(() => setIsLoading(false), 1000)
+
+    return () => clearTimeout(timeOut)
+  }, [])
+
   const [emblaRef] = useEmblaCarousel({
     align: "start",
     skipSnaps: false,
@@ -43,38 +53,49 @@ export default function Home({ products }: HomeProps) {
             ref={emblaRef}
           >
             <SliderContainer className='embla__container container'>
-              {products.map(product => {
-                return (
-                  <Product
-                    href={`/product/${product.id}`}
-                    key={product.id}
-                    className='embla__slide'
-                    prefetch={false}
-                  >
-                    <Image
-                      src={product.imageUrl}
-                      width={520}
-                      height={480}
-                      alt={`Imagem da ${product.name}`}
-                      priority
-                      style={{ width: "100%", height: "100%" }}
-                    />
+              {isLoading ? (
+                <>
+                  <ProductSkeleton className='embla__slide' />
+                  <ProductSkeleton className='embla__slide' />
+                  <ProductSkeleton className='embla__slide' />
+                </>
+              ) : (
+                <>
+                  {products.map(product => {
+                    return (
+                      <Product
+                        href={`/product/${product.id}`}
+                        key={product.id}
+                        className='embla__slide'
+                        passHref
+                        prefetch={false}
+                      >
+                        <Image
+                          src={product.imageUrl}
+                          width={520}
+                          height={480}
+                          alt={`Imagem da ${product.name}`}
+                          priority
+                          style={{ width: "100%", height: "100%" }}
+                        />
 
-                    <footer>
-                      <div>
-                        <strong>{product.name}</strong> {"\n"}
-                        <span>{product.price}</span>
-                      </div>
-                      <CartButton
-                        color='green'
-                        size='large'
-                        disabled={checkIfItemAlreadyExists(product.id)}
-                        onClick={(e) => handleAddToCart(e, product)}
-                      />
-                    </footer>
-                  </Product>
-                )
-              })}
+                        <footer>
+                          <div>
+                            <strong>{product.name}</strong> {"\n"}
+                            <span>{product.price}</span>
+                          </div>
+                          <CartButton
+                            color='green'
+                            size='large'
+                            disabled={checkIfItemAlreadyExists(product.id)}
+                            onClick={e => handleAddToCart(e, product)}
+                          />
+                        </footer>
+                      </Product>
+                    )
+                  })}
+                </>
+              )}
             </SliderContainer>
           </div>
         </HomeContainer>
@@ -99,8 +120,8 @@ export const getStaticProps: GetStaticProps = async () => {
         style: "currency",
         currency: "BRL",
       }).format(price.unit_amount ? price.unit_amount / 100 : 0),
-      numberPrice: (price.unit_amount ? price.unit_amount / 100 : 0),
-      defaultPriceId: price.id
+      numberPrice: price.unit_amount ? price.unit_amount / 100 : 0,
+      defaultPriceId: price.id,
     }
   })
 
@@ -111,3 +132,4 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 60 * 2, // 2 hours,
   }
 }
+
